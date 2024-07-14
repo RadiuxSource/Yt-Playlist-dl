@@ -2,4 +2,4 @@ pyrogram
 pytube
 ffmpeg
 moviepy
-ffprob
+ffprobe
