@@ -1,5 +1,8 @@
-pyrogram
+pyrogram==2.0.106
 pytube
 ffmpeg
 moviepy
 ffprobe
+pymongo
+requests
+python-dotenv==1.0.0
