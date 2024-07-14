@@ -3,8 +3,10 @@ import logging
 import time
 from pytube import Playlist, YouTube
 from pyrogram import filters
-from . import zenova
-from .thumbnail import set_thumbnail
+from. import zenova
+from.thumbnail import set_thumbnail
+from.watermark import set_watermark
+import moviepy.editor as mp
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -33,6 +35,11 @@ async def dl_playlist(zenova, message):
         if thumbnail_url is None:
             thumbnail_url = None  # Use default thumbnail
 
+        # Ask if the user wants to set a watermark for the videos
+        watermark_text = await set_watermark(zenova, message)
+        if watermark_text is None:
+            watermark_text = ""  # No watermark
+
         for video in p.videos:
             logger.info(f"Downloading video: {video.title}")
             await zenova.send_message(message.chat.id, f"Downloading video: {video.title}")
@@ -57,6 +64,13 @@ async def dl_playlist(zenova, message):
             logger.info(f"Video downloaded successfully: {video.title}")
             await zenova.send_message(message.chat.id, f"Video downloaded successfully: {video.title}")
 
+            # Add watermark to the video
+            video = mp.VideoFileClip(video_file)
+            txt_clip = mp.TextClip(watermark_text, fontsize=70, color='white')
+            txt_clip = txt_clip.set_position('bottom_right').set_duration(120)  # 2 minutes
+            video = mp.CompositeVideoClip([video, txt_clip])
+            video.write_videofile(video_file)
+
             # Upload the video to the chat with a custom caption and thumbnail
             caption = f"Video: {video.title}\nUploaded by ZENOVA"
             await zenova.send_video(channel_id, video_file, caption=caption, thumb=thumbnail_url)
@@ -64,15 +78,6 @@ async def dl_playlist(zenova, message):
         logger.info(f"Playlist downloaded successfully!")
         await zenova.send_message(message.chat.id, f"Playlist downloaded successfully!")
 
-    except Exception as e:
-        logger.error(f"Error: {e}")
-        await zenova.send_message(message.chat.id, f"Error: {e}")
-
-@zenova.on_message(filters.private)
-async def dl_playlist_message(zenova, message):
-    try:
-        logger.info(f"Received playlist URL from {message.from_user.username}")
-        await dl_playlist(zenova, message)
     except Exception as e:
         logger.error(f"Error: {e}")
         await zenova.send_message(message.chat.id, f"Error: {e}")
