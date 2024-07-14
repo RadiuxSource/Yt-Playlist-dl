@@ -6,3 +6,4 @@ ffprobe
 pymongo
 requests
 python-dotenv==1.0.0
+TgCrypto
