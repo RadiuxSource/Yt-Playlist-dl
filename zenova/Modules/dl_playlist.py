@@ -40,11 +40,31 @@ async def dl_playlist(zenova, message):
         if watermark_text is None:
             watermark_text = ""  # No watermark
 
+        # Ask for the desired video quality
+        video_quality = await zenova.ask(message.chat.id, "Enter the desired video quality (144p, 240p, 360p, 480p, 720p, 1080p): ")
+        video_quality = video_quality.lower()
+
         for video in p.videos:
             logger.info(f"Downloading video: {video.title}")
             await zenova.send_message(message.chat.id, f"Downloading video: {video.title}")
             yt = YouTube(video.watch_url)
-            mp4_streams = yt.streams.filter(file_extension='mp4').all()
+
+            # Filter streams by video quality
+            if video_quality == "144p":
+                mp4_streams = yt.streams.filter(file_extension='mp4', resolution='144p').all()
+            elif video_quality == "240p":
+                mp4_streams = yt.streams.filter(file_extension='mp4', resolution='240p').all()
+            elif video_quality == "360p":
+                mp4_streams = yt.streams.filter(file_extension='mp4', resolution='360p').all()
+            elif video_quality == "480p":
+                mp4_streams = yt.streams.filter(file_extension='mp4', resolution='480p').all()
+            elif video_quality == "720p":
+                mp4_streams = yt.streams.filter(file_extension='mp4', resolution='720p').all()
+            elif video_quality == "1080p":
+                mp4_streams = yt.streams.filter(file_extension='mp4', resolution='1080p').all()
+            else:
+                mp4_streams = yt.streams.filter(file_extension='mp4').all()  # Default to highest quality
+
             d_video = mp4_streams[-1]
 
             # Download the video with real-time status updates
