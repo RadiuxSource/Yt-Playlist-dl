@@ -3,9 +3,9 @@ import logging
 import time
 from pytube import Playlist, YouTube
 from pyrogram import filters
-from. import zenova
-from.thumbnail import set_thumbnail
-from.watermark import set_watermark
+from zenova import zenova
+from .thumbnail import set_thumbnail
+from .watermark import set_watermark
 import moviepy.editor as mp
 
 logging.basicConfig(level=logging.DEBUG,
