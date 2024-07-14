@@ -1,5 +1,5 @@
 from pyrogram import Client
-from .config import Config
+from config import Config
 
 zenova = Client(
     api_id=Config.API_ID,
