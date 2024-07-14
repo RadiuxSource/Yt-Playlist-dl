@@ -1,6 +1,6 @@
 import logging
 from pyrogram import filters
-from . import zenova
+from zenova import zenova
 
 logger = logging.getLogger(__name__)
 
