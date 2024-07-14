@@ -3,7 +3,8 @@ import logging
 import time
 from pytube import Playlist, YouTube
 from pyrogram import filters
-from. import zenova
+from . import zenova
+from .thumbnail import set_thumbnail
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -26,6 +27,11 @@ async def dl_playlist(zenova, message):
         channel_id = message.chat.id
         if custom_channel.lower() == "yes":
             channel_id = await zenova.ask(message.chat.id, "Enter the channel ID or username:")
+
+        # Ask if the user wants to set a custom thumbnail for the videos
+        thumbnail_url = await set_thumbnail(zenova, message)
+        if thumbnail_url is None:
+            thumbnail_url = None  # Use default thumbnail
 
         for video in p.videos:
             logger.info(f"Downloading video: {video.title}")
@@ -51,9 +57,9 @@ async def dl_playlist(zenova, message):
             logger.info(f"Video downloaded successfully: {video.title}")
             await zenova.send_message(message.chat.id, f"Video downloaded successfully: {video.title}")
 
-            # Upload the video to the chat with a custom caption
+            # Upload the video to the chat with a custom caption and thumbnail
             caption = f"Video: {video.title}\nUploaded by ZENOVA"
-            await zenova.send_video(channel_id, video_file, caption=caption)
+            await zenova.send_video(channel_id, video_file, caption=caption, thumb=thumbnail_url)
 
         logger.info(f"Playlist downloaded successfully!")
         await zenova.send_message(message.chat.id, f"Playlist downloaded successfully!")
