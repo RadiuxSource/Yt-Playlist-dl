@@ -1,2 +1,5 @@
 pyrogram
 pytube
+ffmpeg
+moviepy
+ffprob
