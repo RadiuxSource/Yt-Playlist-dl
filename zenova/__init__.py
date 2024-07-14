@@ -6,7 +6,9 @@ from pymongo import MongoClient
 from os import listdir, path
 from dotenv import load_dotenv
 from pyrogram import Client
-from config import Config
+from config import API_ID, API_HASH, BOT_TOKEN, BOT_USERNAME, MONGO_URI
+
+
 
 
 loop = asyncio.get_event_loop()
@@ -20,15 +22,16 @@ logging.basicConfig(
 )
 
 
+
 zenova = Client(
     ":zenova:",
-    api_id=Config.API_ID,
-    api_hash=Config.API_HASH,
-    bot_token=Config.BOT_TOKEN,
-    workdir="./sessions"
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN,
 )
 
-client = MongoClient(Config.MONGO_URI)
+
+client = MongoClient(MONGO_URI)
 db = client["giveaway_db"]
 giveaways = db["giveaways"]
 
